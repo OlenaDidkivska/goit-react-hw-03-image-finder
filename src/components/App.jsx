@@ -14,7 +14,6 @@ export class App extends Component {
     page: 1,
     images: [],
     status: 'idle',
-    loading: true,
     showBtn: false,
   };
 
@@ -24,11 +23,14 @@ export class App extends Component {
       return;
     }
 
+    if (query === '') {
+      toast.error("You didn't enter anything!");
+    }
+
     this.setState({
       query,
       page: 1,
       images: [],
-      status: 'pending',
     });
   };
 
@@ -36,7 +38,7 @@ export class App extends Component {
     const { query, page } = this.state;
 
     if (prevState.query !== query || prevState.page !== page) {
-      this.setState({ loading: 'true' });
+      this.setState({ status: 'pending' });
 
       try {
         const response = await fetchImageGallery(query, page);
@@ -113,7 +115,7 @@ export class App extends Component {
   };
 
   render() {
-    const { images, status, loading, showBtn } = this.state;
+    const { images, status, showBtn } = this.state;
     return (
       <AppEl>
         <Searchbar onSubmit={this.handleFormSubmit} />
@@ -122,24 +124,24 @@ export class App extends Component {
             This is the place for the results of your search
           </ImageGalleryIdle>
         )}
+        {!!images.length && (
+          <ImageGallery
+            images={images}
+            onClick={this.handleGalleryButtonClick}
+          />
+        )}
 
         {status === 'pending' && <Loader />}
+
+        {status === 'resolved' && showBtn && (
+          <Button onClick={this.handleGalleryButtonClick} />
+        )}
 
         {status === 'rejected' &&
           toast.error('Try to repeat the request.', {
             id: 'Unfortunately, nothing was found...',
           })}
 
-        {status === 'resolved' && (
-          <>
-            <ImageGallery
-              images={images}
-              onClick={this.handleGalleryButtonClick}
-            />
-            {loading && <Loader />}
-            {showBtn && <Button onClick={this.handleGalleryButtonClick} />}
-          </>
-        )}
         <Toaster />
       </AppEl>
     );

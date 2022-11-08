@@ -50,4 +50,6 @@ export const Field = styled(SearchFormInput)`
 
 export const ErrorText = styled.p`
   color: red;
+  margin: 0;
+  text-align: center;
 `;
