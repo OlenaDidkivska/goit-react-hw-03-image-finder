@@ -17,23 +17,6 @@ export class App extends Component {
     showBtn: false,
   };
 
-  handleFormSubmit = async ({ query }) => {
-    if (query === this.state.query) {
-      toast.success('This request has already been completed');
-      return;
-    }
-
-    if (query === '') {
-      toast.error("You didn't enter anything!");
-    }
-
-    this.setState({
-      query,
-      page: 1,
-      images: [],
-    });
-  };
-
   async componentDidUpdate(_, prevState) {
     const { query, page } = this.state;
 
@@ -89,6 +72,23 @@ export class App extends Component {
       }
     }
   }
+
+  handleFormSubmit = async ({ query }) => {
+    if (query === this.state.query) {
+      toast.success('This request has already been completed');
+      return;
+    }
+
+    if (query === '') {
+      toast.error("You didn't enter anything!");
+    }
+
+    this.setState({
+      query,
+      page: 1,
+      images: [],
+    });
+  };
 
   handleGalleryButtonClick = () => {
     this.setState(prevState => ({
